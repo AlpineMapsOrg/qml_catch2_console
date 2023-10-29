@@ -1,5 +1,5 @@
 /*****************************************************************************
- * QML Catch2 console
+ * Alpine Terrain Renderer
  * Copyright (C) 2023 Adam Celarek
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,21 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *****************************************************************************/
 
-import QtQuick
-import QtQuick.Controls.Material
-import QtQuick.Layouts
+#pragma once
 
-ApplicationWindow {
-    visible: true
+#include <QObject>
 
-    TextInput {
-        id: textInput
-        x: 0
-        y: 0
-        width: parent.width
-        height: parent.height
-        text: _std_buffer.buffer
-        font.pixelSize: 12
-    }
+class StdBuffer : public QObject
+{
+    Q_OBJECT
+public:
+    explicit StdBuffer(QObject* parent = nullptr);
 
-}
+    const QString& buffer() const;
+    void set_buffer(const QString& new_buffer);
+
+signals:
+
+    void buffer_changed(const QString& buffer);
+
+private:
+    QString m_buffer;
+    Q_PROPERTY(QString buffer READ buffer WRITE set_buffer NOTIFY buffer_changed FINAL)
+};

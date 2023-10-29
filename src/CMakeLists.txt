@@ -19,6 +19,7 @@ find_package(Qt6 REQUIRED COMPONENTS Core Gui OpenGL Quick QuickControls2)
 
 qt_add_library(qml_catch2_console STATIC
     qml_catch2_console/main.cpp
+    qml_catch2_console/StdBuffer.h qml_catch2_console/StdBuffer.cpp
 )
 target_link_libraries(qml_catch2_console PUBLIC Catch2::Catch2 PRIVATE fmt Qt::Core Qt::Gui Qt6::Quick Qt6::QuickControls2)
 

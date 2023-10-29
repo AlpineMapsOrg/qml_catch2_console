@@ -25,6 +25,7 @@
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQmlContext>
 #include <QTimer>
 #include <catch2/catch_session.hpp>
 #include <catch2/catch_test_case_info.hpp>
@@ -32,6 +33,12 @@
 #include <catch2/reporters/catch_reporter_event_listener.hpp>
 #include <catch2/reporters/catch_reporter_registrars.hpp>
 #include <fmt/core.h>
+
+#include "StdBuffer.h"
+
+namespace {
+StdBuffer g_buffer;
+}
 
 class ProgressPrinter : public Catch::EventListenerBase
 {
@@ -43,6 +50,8 @@ public:
     }
 
     void testCaseEnded(const Catch::TestCaseStats& status) override {
+        g_buffer.set_buffer(g_buffer.buffer()
+                            + QString("test case: %1").arg(status.testInfo->name.c_str()));
         fmt::print("test case: {:<140}", status.testInfo->name);
         if (status.totals.testCases.allOk())
             fmt::println("\033[0;32mpassed {:>4} of {:>4}\033[0m", status.totals.assertions.passed, status.totals.assertions.total());
@@ -59,6 +68,7 @@ int main( int argc, char* argv[] ) {
     int argc_qt = 1;
     QGuiApplication app = {argc_qt, argv};
     QQmlApplicationEngine engine;
+    engine.rootContext()->setContextProperty("_std_buffer", &g_buffer);
     QObject::connect(
         &engine,
         &QQmlApplicationEngine::objectCreated,
