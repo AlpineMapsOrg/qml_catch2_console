@@ -22,15 +22,16 @@ import QtQuick.Layouts
 
 ApplicationWindow {
     visible: true
-
-    TextInput {
-        id: textInput
-        x: 0
-        y: 0
-        width: parent.width
-        height: parent.height
-        text: _std_buffer.buffer
-        font.pixelSize: 12
+    ScrollView {
+        anchors.fill: parent
+        TextArea {
+            id: textInput
+            anchors.fill: parent
+            text: _std_buffer.buffer
+            font.pixelSize: 12
+            readOnly: true
+            textFormat: TextEdit.PlainText
+            font.family: "Monospace"
+        }
     }
-
 }

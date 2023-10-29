@@ -19,6 +19,9 @@
 #pragma once
 
 #include <QObject>
+#include <QTimer>
+#include <iostream>
+#include <sstream>
 
 class StdBuffer : public QObject
 {
@@ -26,8 +29,11 @@ class StdBuffer : public QObject
 public:
     explicit StdBuffer(QObject* parent = nullptr);
 
-    const QString& buffer() const;
+    [[nodiscard]] const QString& buffer() const;
     void set_buffer(const QString& new_buffer);
+    void append(const QString& string);
+    void append(const std::string& string);
+    void process_str_out();
 
 signals:
 
@@ -35,5 +41,7 @@ signals:
 
 private:
     QString m_buffer;
+    std::ostringstream m_string_out;
+    QTimer m_timer;
     Q_PROPERTY(QString buffer READ buffer WRITE set_buffer NOTIFY buffer_changed FINAL)
 };

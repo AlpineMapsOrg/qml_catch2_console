@@ -18,10 +18,13 @@
 
 #include "StdBuffer.h"
 
-StdBuffer::StdBuffer(QObject *parent)
+StdBuffer::StdBuffer(QObject* parent)
     : QObject{parent}
+    , m_timer(this)
 {
-    
+    std::cout.rdbuf(m_string_out.rdbuf());
+    connect(&m_timer, &QTimer::timeout, this, &StdBuffer::process_str_out);
+    m_timer.start(10);
 }
 
 const QString& StdBuffer::buffer() const
@@ -35,4 +38,21 @@ void StdBuffer::set_buffer(const QString& new_buffer)
         return;
     m_buffer = new_buffer;
     emit buffer_changed(m_buffer);
+}
+
+void StdBuffer::append(const QString& string)
+{
+    set_buffer(buffer() + string);
+}
+
+void StdBuffer::append(const std::string& string)
+{
+    append(QString(string.c_str()));
+}
+
+void StdBuffer::process_str_out()
+{
+    append(m_string_out.str());
+    m_string_out.str("");
+    m_string_out.clear();
 }

@@ -37,7 +37,7 @@
 #include "StdBuffer.h"
 
 namespace {
-StdBuffer g_buffer;
+StdBuffer* g_std_buffer = nullptr;
 }
 
 class ProgressPrinter : public Catch::EventListenerBase
@@ -49,15 +49,17 @@ public:
         return "Reporter that reports the progress after every test case.";
     }
 
-    void testCaseEnded(const Catch::TestCaseStats& status) override {
-        g_buffer.set_buffer(g_buffer.buffer()
-                            + QString("test case: %1").arg(status.testInfo->name.c_str()));
-        fmt::print("test case: {:<140}", status.testInfo->name);
+    void testCaseEnded(const Catch::TestCaseStats& status) override
+    {
+        g_std_buffer->append(fmt::format("test case: {:<140}", status.testInfo->name));
         if (status.totals.testCases.allOk())
-            fmt::println("\033[0;32mpassed {:>4} of {:>4}\033[0m", status.totals.assertions.passed, status.totals.assertions.total());
+            g_std_buffer->append(fmt::format("passed {:>4} of {:>4}\n",
+                                             status.totals.assertions.passed,
+                                             status.totals.assertions.total()));
         else
-            fmt::println("\033[0;31mfailed {:>4} of {:>4}\033[0m", status.totals.assertions.failed, status.totals.assertions.total());
-        std::fflush(stdout);
+            g_std_buffer->append(fmt::format("FAILED {:>4} of {:>4}\n",
+                                             status.totals.assertions.failed,
+                                             status.totals.assertions.total()));
         QGuiApplication::instance()->processEvents();
     }
 };
@@ -67,8 +69,10 @@ CATCH_REGISTER_LISTENER(ProgressPrinter)
 int main( int argc, char* argv[] ) {
     int argc_qt = 1;
     QGuiApplication app = {argc_qt, argv};
+    StdBuffer std_buffer(&app);
+    g_std_buffer = &std_buffer;
     QQmlApplicationEngine engine;
-    engine.rootContext()->setContextProperty("_std_buffer", &g_buffer);
+    engine.rootContext()->setContextProperty("_std_buffer", &std_buffer);
     QObject::connect(
         &engine,
         &QQmlApplicationEngine::objectCreated,
