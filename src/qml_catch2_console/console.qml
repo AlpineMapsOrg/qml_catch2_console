@@ -31,7 +31,7 @@ ApplicationWindow {
             font.pixelSize: 12
             readOnly: true
             textFormat: TextEdit.PlainText
-            font.family: "Monospace"
+            font.family: "DejaVu Sans Mono"
         }
     }
 }

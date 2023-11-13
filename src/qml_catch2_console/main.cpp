@@ -105,6 +105,15 @@ int main( int argc, char* argv[] ) {
     root_window->showMaximized();
 #endif
 
-    QTimer::singleShot(1, [=]() { int result = Catch::Session().run(argc, argv); });
+    QTimer::singleShot(1, [=]() {
+        std::vector<char*> argv_2;
+        for (int i = 0; i < argc; ++i) {
+            argv_2.push_back(argv[i]);
+        }
+        std::array<char, 20> console_colour_switch = {"--colour-mode none"};
+        argv_2.push_back(console_colour_switch.data());
+        const int argc_2 = argc + 1;
+        Catch::Session().run(argc_2, argv_2.data());
+    });
     return app.exec();
 }
