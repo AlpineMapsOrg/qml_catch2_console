@@ -25,6 +25,7 @@ StdBuffer::StdBuffer(QObject* parent)
     std::cout.rdbuf(m_string_out.rdbuf());
     connect(&m_timer, &QTimer::timeout, this, &StdBuffer::process_str_out);
     m_timer.start(10);
+    QTimer::singleShot(0, this, &StdBuffer::process_str_out);
 }
 
 const QString& StdBuffer::buffer() const
@@ -42,6 +43,7 @@ void StdBuffer::set_buffer(const QString& new_buffer)
 
 void StdBuffer::append(const QString& string)
 {
+    process_str_out();
     set_buffer(buffer() + string);
 }
 
@@ -52,7 +54,7 @@ void StdBuffer::append(const std::string& string)
 
 void StdBuffer::process_str_out()
 {
-    append(m_string_out.str());
+    set_buffer(buffer() + QString(m_string_out.str().c_str()));
     m_string_out.str("");
     m_string_out.clear();
 }

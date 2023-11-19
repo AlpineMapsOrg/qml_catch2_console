@@ -60,7 +60,17 @@ public:
             g_std_buffer->append(fmt::format("FAILED {:>4} of {:>4}\n",
                                              status.totals.assertions.failed,
                                              status.totals.assertions.total()));
-        QGuiApplication::instance()->processEvents();
+        QGuiApplication::instance()->processEvents(QEventLoop::AllEvents, 1);
+    }
+
+    void assertionStarting(const Catch::AssertionInfo& assertionInfo) override
+    {
+        QGuiApplication::instance()->processEvents(QEventLoop::AllEvents, 0);
+    }
+
+    void assertionEnded(const Catch::AssertionStats& assertionStats) override
+    {
+        QGuiApplication::instance()->processEvents(QEventLoop::AllEvents, 0);
     }
 };
 
