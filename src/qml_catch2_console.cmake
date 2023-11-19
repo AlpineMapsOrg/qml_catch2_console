@@ -18,17 +18,13 @@
 
 set(qml_catch2_console_dir ${CMAKE_CURRENT_LIST_DIR})
 
-include(FetchContent)
-FetchContent_Declare(catch2
-    GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-    GIT_TAG v3.4.0
-    SOURCE_DIR 		${CMAKE_SOURCE_DIR}/3rdparty/Catch2
-)
-FetchContent_Declare(fmt
-    GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-    SOURCE_DIR 		${CMAKE_SOURCE_DIR}/3rdparty/fmt
-)
-FetchContent_MakeAvailable(catch2 fmt)
+if (NOT TARGET Catch2)
+    alp_add_git_repository(catch2 URL https://github.com/catchorg/Catch2.git COMMITISH v3.4.0)
+endif()
+
+if (NOT TARGET fmt)
+    alp_add_git_repository(fmt URL https://github.com/fmtlib/fmt.git COMMITISH 10.1.1)
+endif()
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui OpenGL Quick QuickControls2)
 qt_standard_project_setup()
@@ -40,7 +36,11 @@ function(add_qml_catch2_console_unittests target_name)
         ${ARGN}
     )
 
-    target_link_libraries(${target_name} PUBLIC Catch2::Catch2 fmt Qt::Core Qt::Gui Qt6::Quick Qt6::QuickControls2 ${unittest_library})
+    target_link_libraries(${target_name} PUBLIC Catch2::Catch2 fmt Qt::Core Qt::Gui Qt6::Quick Qt6::QuickControls2)
+
+    if (EMSCRIPTEN)
+        target_link_options(${target_name} PUBLIC -sASYNCIFY -Os)
+    endif()
 
     set_source_files_properties(${qml_catch2_console_dir}/qml_catch2_console/console.qml PROPERTIES
          QT_RESOURCE_ALIAS qml_catch2_console/console.qml
