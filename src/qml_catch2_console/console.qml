@@ -32,6 +32,7 @@ ApplicationWindow {
             readOnly: true
             textFormat: TextEdit.PlainText
             font.family: "DejaVu Sans Mono"
+            cursorPosition : length-1
         }
     }
 }
