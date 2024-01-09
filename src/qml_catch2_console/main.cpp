@@ -63,12 +63,12 @@ public:
         QGuiApplication::instance()->processEvents(QEventLoop::AllEvents, 1);
     }
 
-    void assertionStarting(const Catch::AssertionInfo& assertionInfo) override
+    void assertionStarting(const Catch::AssertionInfo&) override
     {
         QGuiApplication::instance()->processEvents(QEventLoop::AllEvents, 0);
     }
 
-    void assertionEnded(const Catch::AssertionStats& assertionStats) override
+    void assertionEnded(const Catch::AssertionStats&) override
     {
         QGuiApplication::instance()->processEvents(QEventLoop::AllEvents, 0);
     }
