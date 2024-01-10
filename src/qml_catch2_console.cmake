@@ -19,7 +19,7 @@
 set(qml_catch2_console_dir ${CMAKE_CURRENT_LIST_DIR})
 
 if (NOT TARGET Catch2)
-    alp_add_git_repository(catch2 URL https://github.com/catchorg/Catch2.git COMMITISH v3.4.0)
+    alp_add_git_repository(catch2 URL https://github.com/catchorg/Catch2.git COMMITISH v3.5.1)
 endif()
 
 if (NOT TARGET fmt)
