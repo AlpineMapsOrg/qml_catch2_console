@@ -68,7 +68,6 @@ jobs:
         CMAKE_PREFIX_PATH: ${{env.Qt6_Dir}}/lib/cmake
       run: >
         cmake -G Ninja 
-        -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} 
         -DALP_ENABLE_ADDRESS_SANITIZER=${{ matrix.asan }}
         -DCMAKE_BUILD_TYPE=Debug
         -B ./build
@@ -81,6 +80,7 @@ jobs:
         cmake --build ./build
 
     - name: Don't close loaded libraries for better sanitizer output
+      if: matrix.asan == "ON"
       env:
         CC: ${{ matrix.CC }}
         CXX: ${{ matrix.CXX }}
@@ -90,6 +90,7 @@ jobs:
         $CC --shared dlclose.c -o libdlclose.so
       
     - name: Unittests on Linux
+      if: matrix.asan == "ON"
       env:
         QT_QPA_PLATFORM: offscreen
         DISPLAY: :1
@@ -100,3 +101,14 @@ jobs:
         Xvfb :1 -screen 0 1024x768x16 &
         sleep 5
         ./build/unittests/test_qml_catch2_console
+      
+    - name: Unittests on Linux
+      if: matrix.asan == "OFF"
+      env:
+        QT_QPA_PLATFORM: offscreen
+        DISPLAY: :1
+      run: |
+        Xvfb :1 -screen 0 1024x768x16 &
+        sleep 5
+        ./build/unittests/test_qml_catch2_console
+
