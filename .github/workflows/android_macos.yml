@@ -106,36 +106,6 @@ jobs:
       run: |
         adb devices
         adb install build/unittests/android-build/test_qml_catch2_console.apk
-        adb shell am start -n org.qtproject.example.test_qml_catch2_console/org.qtproject.qt.android.bindings.QtActivity
+        adb shell am start -W -n org.qtproject.example.test_qml_catch2_console/org.qtproject.qt.android.bindings.QtActivity
+        adb logcat -d -s libtest_qml_catch2_console_arm64-v8a.so
 
-    - name: Copy to github pages
-      run:
-        mkdir -p github_page
-        cp -r build/unittests/android-build ./github_page/
-
-    - name: Generate Directory Listings     
-      uses: jayanta525/github-pages-directory-listing@v4.0.0
-      with:
-        FOLDER: github_page
-
-    - name: Create Pages artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: github_page
-
-  deploy:
-    needs: build
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    steps:
-    - name: Setup Pages
-      uses: actions/configure-pages@v4
-
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v4
-
-    - name: Debug output
-      run: echo ${{ steps.deployment.outputs.page_url }}
