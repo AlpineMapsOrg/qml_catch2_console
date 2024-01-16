@@ -1,0 +1,144 @@
+name: "Android on Macos"
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+concurrency:
+  group: "android_macos"
+  cancel-in-progress: true
+  
+env:
+  ANDROID_ARCH: x86_64
+  ANDROID_TARGET: google_apis_playstore
+  API_LEVEL: 33
+  ANDROID_BUILD_TOOLS_VERSION: 34.0.0
+  ANDROID_SDK_PACKAGES: system-images;android-33;google_apis_playstore;x86_64 platforms;android-33 build-tools;34.0.0 platform-tools emulator
+  EMULATOR_TIMEOUT: 350
+  EMULATOR_NAME: nexus
+  # from qt creator
+  ANDROID_NDK_PLATFORM: android-33
+  ANDROID_SDK_BUILD_TOOLS_REVISION: 33.0.2
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: |
+        brew install tree
+        
+    - name: Setup JDK
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+    
+    - name: Install Qt native version (required for cross compilation)
+      uses: jurplel/install-qt-action@v3
+      with:
+        aqtversion: '==3.1.*'
+        version: '6.6.1'
+        host: mac
+        target: 'desktop'
+        arch: clang_64
+        dir: '${{github.workspace}}/qt'
+        install-deps: 'true'
+
+    - name: Set QT_HOST_PATH
+      run: echo "QT_HOST_PATH=${Qt6_DIR}" >> "$GITHUB_ENV"
+
+    - name: Add avdmanager and sdkmanager to system PATH
+      run: |
+          echo "$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/${{ env.ANDROID_BUILD_TOOLS_VERSION }}" >> $GITHUB_PATH
+
+    - name: Install Sdk
+      run: |
+         yes Y | sdkmanager --licenses
+         sdkmanager --install ${ANDROID_SDK_PACKAGES}
+  
+    - name: Build emulator
+      run: |
+          echo "no" | avdmanager --verbose create avd --force -n $EMULATOR_NAME --abi "${ANDROID_TARGET}/${ANDROID_ARCH}" -k "system-images;android-${API_LEVEL};${ANDROID_TARGET};${ANDROID_ARCH}"
+
+    - name: Launch emulator
+      run: |
+        wget https://raw.githubusercontent.com/amrsa1/android-emulator-workflow/main/start_emu_headless.sh
+        chmod +x ./start_emu_headless.sh
+        EMULATOR_TIMEOUT=$EMULATOR_TIMEOUT EMULATOR_NAME=$EMULATOR_NAME ./start_emu_headless.sh
+
+    - name: Install Qt Android version
+      uses: jurplel/install-qt-action@v3
+      with:
+        aqtversion: '==3.1.*'
+        version: '6.6.1'
+        host: mac
+        target: 'android'
+        arch: android_x86_64
+        dir: '${{github.workspace}}/qt'
+        install-deps: 'true'
+
+    - name: Make qt binaries executable
+      run: |
+        chmod u+x ${Qt6_DIR}/bin/*
+
+    - name: Configure CMake for short tests
+      env:
+        CMAKE_PREFIX_PATH: ${{env.Qt6_DIR}}/lib/cmake
+      run: >
+        ${Qt6_DIR}/bin/qt-cmake
+        -B build
+        -DCMAKE_BUILD_TYPE=Debug
+        -DAA_ENABLE_LONG_TEST_RUN=OFF
+        -DFMT_INSTALL=OFF
+        -S ${{ github.workspace }}
+
+    - name: Build short tests
+      run: |
+        cmake --build build
+        
+    - name: Debug output
+      if: always()
+      run: |
+        tree ./build
+      
+    - name: Run on emulator
+      run: |
+        adb devices
+        adb install build/unittests/android-build/test_qml_catch2_console.apk
+        adb shell am start -n org.qtproject.example.test_qml_catch2_console/org.qtproject.qt.android.bindings.QtActivity
+
+    - name: Copy to github pages
+      run:
+        mkdir -p github_page
+        cp -r build/unittests/android-build ./github_page/
+
+    - name: Generate Directory Listings     
+      uses: jayanta525/github-pages-directory-listing@v4.0.0
+      with:
+        FOLDER: github_page
+
+    - name: Create Pages artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: github_page
+
+  deploy:
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+
+    - name: Debug output
+      run: echo ${{ steps.deployment.outputs.page_url }}
