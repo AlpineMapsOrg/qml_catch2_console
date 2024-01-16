@@ -117,7 +117,7 @@ int main( int argc, char* argv[] ) {
         const int argc_2 = argc + 1;
         const auto retval = Catch::Session().run(argc_2, argv_2.data());
         std::cout << "Catch::Session finished with exit code " << retval << std::endl;
-        QTimer::singleShot(10000, [retval]() { QCoreApplication::quit(); });
+        QTimer::singleShot(10000, []() { QCoreApplication::quit(); });
     });
     return app.exec();
 }
