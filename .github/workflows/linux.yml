@@ -21,12 +21,15 @@ jobs:
           - compiler: gcc
             CC: '/usr/bin/gcc'
             CXX: '/usr/bin/g++'
+            asan: 'OFF'
           - compiler: clang15
             CC: '/usr/bin/clang-15'
             CXX: '/usr/bin/clang++-15'
+            asan: 'ON'
           - compiler: clang17
             CC: '/usr/bin/clang-17'
             CXX: '/usr/bin/clang++-17'
+            asan: 'ON'
             
     runs-on: ubuntu-latest
 
@@ -66,7 +69,7 @@ jobs:
       run: >
         cmake -G Ninja 
         -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} 
-        -DALP_ENABLE_ADDRESS_SANITIZER=ON
+        -DALP_ENABLE_ADDRESS_SANITIZER=${{ matrix.asan }}
         -DCMAKE_BUILD_TYPE=Debug
         -B ./build
 
