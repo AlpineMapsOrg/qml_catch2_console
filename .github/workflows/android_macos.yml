@@ -17,9 +17,6 @@ env:
   ANDROID_SDK_PACKAGES: system-images;android-33;google_apis_playstore;x86_64 platforms;android-33 build-tools;34.0.0 platform-tools emulator
   EMULATOR_TIMEOUT: 350
   EMULATOR_NAME: nexus
-  # from qt creator
-  ANDROID_NDK_PLATFORM: android-33
-  ANDROID_SDK_BUILD_TOOLS_REVISION: 33.0.2
 
 jobs:
   build:
