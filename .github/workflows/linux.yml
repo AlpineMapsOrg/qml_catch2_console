@@ -80,7 +80,7 @@ jobs:
         cmake --build ./build
 
     - name: Don't close loaded libraries for better sanitizer output
-      if: matrix.asan == "ON"
+      if: matrix.asan == 'ON'
       env:
         CC: ${{ matrix.CC }}
         CXX: ${{ matrix.CXX }}
@@ -90,7 +90,7 @@ jobs:
         $CC --shared dlclose.c -o libdlclose.so
       
     - name: Unittests on Linux
-      if: matrix.asan == "ON"
+      if: matrix.asan == 'ON'
       env:
         QT_QPA_PLATFORM: offscreen
         DISPLAY: :1
@@ -103,7 +103,7 @@ jobs:
         ./build/unittests/test_qml_catch2_console
       
     - name: Unittests on Linux
-      if: matrix.asan == "OFF"
+      if: matrix.asan == 'ON'
       env:
         QT_QPA_PLATFORM: offscreen
         DISPLAY: :1
