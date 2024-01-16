@@ -95,14 +95,6 @@ int main( int argc, char* argv[] ) {
         },
         Qt::QueuedConnection);
 
-    QDirIterator it(":", QDirIterator::Subdirectories);
-    while (it.hasNext()) {
-        qDebug() << it.next();
-    }
-
-    QFile f(":/qt-project.org/imports/QtQuick/qmldir");
-    f.open(QIODeviceBase::ReadOnly);
-    qDebug() << f.readAll().toStdString();
 
     engine.load(QUrl("qrc:/qt/qml/src/qml_catch2_console/console.qml"));
     QQuickWindow* root_window = dynamic_cast<QQuickWindow*>(engine.rootObjects().first());
