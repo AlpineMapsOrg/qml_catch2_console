@@ -115,7 +115,8 @@ int main( int argc, char* argv[] ) {
         std::array<char, 20> console_colour_switch = {"--colour-mode none"};
         argv_2.push_back(console_colour_switch.data());
         const int argc_2 = argc + 1;
-        Catch::Session().run(argc_2, argv_2.data());
+        const auto retval = Catch::Session().run(argc_2, argv_2.data());
+        QTimer::singleShot(1000, [retval]() { QCoreApplication::exit(retval); });
     });
     return app.exec();
 }
