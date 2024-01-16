@@ -23,3 +23,12 @@ project(qml_catch2_console_test)
 include(../src/qml_catch2_console.cmake)
 
 add_qml_catch2_console_unittests(test_qml_catch2_console main.cpp)
+if (EMSCRIPTEN)
+    set(ALP_INSTALL_FILES
+        "$<TARGET_FILE_DIR:test_qml_catch2_console>/test_qml_catch2_console.js"
+        "$<TARGET_FILE_DIR:test_qml_catch2_console>/test_qml_catch2_console.wasm"
+        "$<TARGET_FILE_DIR:test_qml_catch2_console>/test_qml_catch2_console.html"
+        "$<TARGET_FILE_DIR:test_qml_catch2_console>/test_qml_catch2_console.js"
+    )
+    install(FILES ${ALP_INSTALL_FILES} DESTINATION ${ALP_WWW_INSTALL_DIR})
+endif()

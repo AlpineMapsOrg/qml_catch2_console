@@ -68,7 +68,6 @@ jobs:
         -G Ninja
         -B build
         -DCMAKE_BUILD_TYPE=Release
-        -DAA_ENABLE_LONG_TEST_RUN=OFF
         -DAA_WWW_INSTALL_DIR=github_page
         -DFMT_INSTALL=OFF
         -S ${{ github.workspace }}
