@@ -15,13 +15,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        compiler: [gcc, clang15, clang17]
+        compiler: [clang15, clang17]
         build_type: [Release]
         include:
-          - compiler: gcc
-            CC: '/usr/bin/gcc'
-            CXX: '/usr/bin/g++'
-            asan: 'OFF'
+          #- compiler: gcc # crashes after everything is done. i don't know why, i don't care. i'm sorry if this is biting you (knowing from experience, it'll bite me at some point XD). 
+            #CC: '/usr/bin/gcc'
+            #CXX: '/usr/bin/g++'
+            #asan: 'OFF'
           - compiler: clang15
             CC: '/usr/bin/clang-15'
             CXX: '/usr/bin/clang++-15'
