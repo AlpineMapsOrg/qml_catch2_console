@@ -103,7 +103,7 @@ jobs:
         ./build/unittests/test_qml_catch2_console
       
     - name: Unittests on Linux
-      if: matrix.asan == 'ON'
+      if: matrix.asan == 'OFF'
       env:
         QT_QPA_PLATFORM: offscreen
         DISPLAY: :1
