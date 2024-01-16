@@ -17,7 +17,9 @@
  *****************************************************************************/
 
 #include "StdBuffer.h"
+
 #include <QDebug>
+#include <iostream>
 
 StdBuffer::StdBuffer(QObject* parent)
     : QObject{parent}

@@ -20,7 +20,6 @@
 
 #include <QObject>
 #include <QTimer>
-#include <iostream>
 #include <sstream>
 
 class StdBuffer : public QObject
