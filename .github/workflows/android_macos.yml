@@ -107,5 +107,5 @@ jobs:
         adb devices
         adb install build/unittests/android-build/test_qml_catch2_console.apk
         adb shell am start -W -n org.qtproject.example.test_qml_catch2_console/org.qtproject.qt.android.bindings.QtActivity
-        adb logcat -d -s libtest_qml_catch2_console_arm64-v8a.so
+        adb logcat -d
 
