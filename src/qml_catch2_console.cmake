@@ -38,6 +38,17 @@ function(add_qml_catch2_console_unittests target_name)
 
     target_link_libraries(${target_name} PUBLIC Catch2::Catch2 fmt Qt::Core Qt::Gui Qt6::Quick Qt6::QuickControls2)
 
+
+    if (ALP_ENABLE_ADDRESS_SANITIZER)
+        message(NOTICE "building with address sanitizer enabled")
+        if(MSVC)
+            target_compile_options (${target_name} PUBLIC /fsanitize=address)
+        else()
+            target_compile_options(${target_name} PUBLIC -fno-omit-frame-pointer -fsanitize=address)
+            target_link_options(${target_name} PUBLIC -fno-omit-frame-pointer -fsanitize=address)
+        endif()
+    endif()
+
     if (EMSCRIPTEN)
         target_link_options(${target_name} PUBLIC -sASYNCIFY -Os)
     endif()
