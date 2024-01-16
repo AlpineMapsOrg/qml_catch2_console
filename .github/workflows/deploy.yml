@@ -89,10 +89,13 @@ jobs:
       shell: bash
       run: |
         BUILD_DIR="build"
+        APK_TARGET="unittests"
         echo "BUILD_DIR=$BUILD_DIR" >> $GITHUB_ENV
+        echo "APK_TARGET=$APK_TARGET" >> $GITHUB_ENV
+        
         echo "INSTALL_DIR=install/${{ matrix.qtarch }}" >> $GITHUB_ENV
-        echo "APK_DIR=$BUILD_DIR/unittests/android-build/build/outputs/apk/" >> $GITHUB_ENV
-        echo "ANDROID_BUILD_DIR=$BUILD_DIR/unittests/android-build/" >> $GITHUB_ENV
+        echo "APK_DIR=$BUILD_DIR/$APK_TARGET/android-build/build/outputs/apk/" >> $GITHUB_ENV
+        echo "ANDROID_BUILD_DIR=$BUILD_DIR/$APK_TARGET/android-build/" >> $GITHUB_ENV
 
     - name: Configure CMake
       env:
@@ -103,7 +106,6 @@ jobs:
         -B $BUILD_DIR
         -DCMAKE_BUILD_TYPE=Release
         -DALP_WWW_INSTALL_DIR=$INSTALL_DIR
-        -DALP_ENABLE_ASSERTS=ON
         -DFMT_INSTALL=OFF
         ${{ matrix.additional_cmake_flags }}
         -S ${{ github.workspace }}
@@ -118,7 +120,7 @@ jobs:
       run: |
         echo ${{ secrets.SIGNINGKEYBASE64 }} > release.keystore.base64
         base64 -d release.keystore.base64 > release.keystore
-        $QT_HOST_PATH/bin/androiddeployqt --input $APK_DIR/android-alpineapp-deployment-settings.json --output $ANDROID_BUILD_DIR --android-platform android-33 --gradle --release --sign release.keystore alpinemaps --storepass ${{ secrets.KEYSTOREPASSWORD }}
+        $QT_HOST_PATH/bin/androiddeployqt --input $BUILD_DIR/$APK_TARGET/android-alpineapp-deployment-settings.json --output $ANDROID_BUILD_DIR --android-platform android-33 --gradle --release --sign release.keystore alpinemaps --storepass ${{ secrets.KEYSTOREPASSWORD }}
         
     - name: Readme why Android package was not signed
       env: 
