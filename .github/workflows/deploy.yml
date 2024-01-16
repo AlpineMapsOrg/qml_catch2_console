@@ -111,7 +111,9 @@ jobs:
         -S ${{ github.workspace }}
 
     - name: Build
-      run: cmake --build $BUILD_DIR ${{ matrix.additional_build_flags }}
+      run: |
+        cmake --build $BUILD_DIR ${{ matrix.additional_build_flags }}
+        tree build
 
     - name: Signing Android package
       env: 
