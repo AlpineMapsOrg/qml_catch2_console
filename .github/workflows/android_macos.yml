@@ -93,7 +93,7 @@ jobs:
         -DFMT_INSTALL=OFF
         -S ${{ github.workspace }}
 
-    - name: Build short tests
+    - name: Build tests
       run: |
         cmake --build build
         

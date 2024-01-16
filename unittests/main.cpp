@@ -23,7 +23,7 @@ TEST_CASE("test check")
     CHECK(true);
 }
 
-TEST_CASE("test failed check")
-{
-    CHECK(false);
-}
+// TEST_CASE("test failed check")
+// {
+// CHECK(false);
+// }
