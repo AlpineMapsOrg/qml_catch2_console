@@ -21,17 +21,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        qtarch: [wasm_singlethread, wasm_multithread, android_arm64_v8a, android_armv7]
+        qtarch: [wasm_singlethread, android_arm64_v8a, android_armv7]
         qtversion: ['6.6.1']
         include:
           - qtarch: wasm_singlethread
             qttarget: 'desktop'
             qtmodules: 'qtcharts'
-            additional_build_flags: '--target install'
-          - qtarch: wasm_multithread
-            qttarget: 'desktop'
-            qtmodules: 'qtcharts'
-            additional_cmake_flags: '-DALP_ENABLE_THREADING=ON'
             additional_build_flags: '--target install'
           - qtarch: android_arm64_v8a
             qttarget: 'android'
