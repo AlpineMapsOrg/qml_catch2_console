@@ -17,6 +17,7 @@
  *****************************************************************************/
 
 #include "StdBuffer.h"
+#include <QDebug>
 
 StdBuffer::StdBuffer(QObject* parent)
     : QObject{parent}
@@ -54,7 +55,13 @@ void StdBuffer::append(const std::string& string)
 
 void StdBuffer::process_str_out()
 {
-    set_buffer(buffer() + QString(m_string_out.str().c_str()));
+    const auto str = QString::fromStdString(m_string_out.str());
+    if (str.length() > 0) {
+        const auto split = str.split('\n');
+        for (const auto &s : split)
+            qDebug() << s;
+    }
+    set_buffer(buffer() + str);
     m_string_out.str("");
     m_string_out.clear();
 }
