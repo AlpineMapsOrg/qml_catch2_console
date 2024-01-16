@@ -116,7 +116,8 @@ int main( int argc, char* argv[] ) {
         argv_2.push_back(console_colour_switch.data());
         const int argc_2 = argc + 1;
         const auto retval = Catch::Session().run(argc_2, argv_2.data());
-        QTimer::singleShot(10000, [retval]() { QCoreApplication::exit(retval); });
+        std::cout << "Catch::Session finished with exit code " << retval << std::endl;
+        QTimer::singleShot(10000, [retval]() { QCoreApplication::quit(); });
     });
     return app.exec();
 }

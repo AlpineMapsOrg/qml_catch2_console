@@ -109,4 +109,5 @@ jobs:
         adb shell am start -W -n org.qtproject.example.test_qml_catch2_console/org.qtproject.qt.android.bindings.QtActivity
         while [ "$(adb shell dumpsys window windows | grep -i "test_qml_catch2_console" | wc -l | tr -d '[:space:]')" -ne 0 ]; do sleep 2; done && echo "Condition met. Exiting loop."
         adb logcat -d -s libtest_qml_catch2_console_x86_64.so
+        adb logcat -d -s libtest_qml_catch2_console_x86_64.so | grep -q "Catch::Session finished with exit code 0" || exit 1
 
