@@ -107,5 +107,6 @@ jobs:
         adb devices
         adb install build/unittests/android-build/test_qml_catch2_console.apk
         adb shell am start -W -n org.qtproject.example.test_qml_catch2_console/org.qtproject.qt.android.bindings.QtActivity
-        adb logcat -d
+        while [ "$(adb shell dumpsys window windows | grep -i "test_qml_catch2_console" | wc -l | tr -d '[:space:]')" -ne 0 ]; do sleep 5; done && echo "Condition met. Exiting loop."
+        adb logcat -d -s libtest_qml_catch2_console_x86_64.so
 
