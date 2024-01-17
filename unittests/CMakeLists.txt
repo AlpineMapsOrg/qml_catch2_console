@@ -28,7 +28,7 @@ if (EMSCRIPTEN)
         "$<TARGET_FILE_DIR:test_qml_catch2_console>/test_qml_catch2_console.js"
         "$<TARGET_FILE_DIR:test_qml_catch2_console>/test_qml_catch2_console.wasm"
         "$<TARGET_FILE_DIR:test_qml_catch2_console>/test_qml_catch2_console.html"
-        "$<TARGET_FILE_DIR:test_qml_catch2_console>/test_qml_catch2_console.js"
+        "$<TARGET_FILE_DIR:test_qml_catch2_console>/qtloader.js"
     )
     install(FILES ${ALP_INSTALL_FILES} DESTINATION ${ALP_WWW_INSTALL_DIR})
 endif()
