@@ -117,7 +117,10 @@ int main( int argc, char* argv[] ) {
         const int argc_2 = argc + 1;
         const auto retval = Catch::Session().run(argc_2, argv_2.data());
         std::cout << "Catch::Session finished with exit code " << retval << std::endl;
-        QTimer::singleShot(10000, []() { QCoreApplication::quit(); });
+#if defined(__ANDROID__) && (defined(__i386__) || defined(__x86_64__))
+        // stop automatically in the android emulator
+        QTimer::singleShot(1000, []() { QCoreApplication::quit(); });
+#endif
     });
     return app.exec();
 }
