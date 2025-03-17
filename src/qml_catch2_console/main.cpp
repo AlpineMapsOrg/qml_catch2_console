@@ -17,6 +17,7 @@
  *****************************************************************************/
 
 #include <QDirIterator>
+#include <QFontDatabase>
 #include <QQuickWindow>
 #include <chrono>
 #include <cstdio>
@@ -79,6 +80,10 @@ CATCH_REGISTER_LISTENER(ProgressPrinter)
 int main( int argc, char* argv[] ) {
     int argc_qt = 1;
     QGuiApplication app = {argc_qt, argv};
+    QFontDatabase::addApplicationFont(":/fonts/Roboto/Roboto-Regular.ttf");
+    QFontDatabase::addApplicationFont(":/fonts/Roboto/Roboto-Bold.ttf");
+    app.setFont(QFont("Roboto", 12, 400));
+
     StdBuffer std_buffer(&app);
     g_std_buffer = &std_buffer;
     QQmlApplicationEngine engine;
